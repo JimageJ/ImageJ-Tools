@@ -1,6 +1,7 @@
 # ImageJTools
-Random imageJ scripts
 
+
+Nuclear segmentation
 
 The segmentation tool works by a DoG filter, then Otsu to generate a binary map. I then use a watershed to split objects, but a 3D watershed it a little too severe and causes the loss of many nuclei and many shrink down much smaller than their original size. 
 
