@@ -57,12 +57,12 @@ try:
 	from net.haesleinhuepf.clij2 import CLIJ2
 
 except:
-	errorDialog("""This plugin requires clij2 to function. 
+	errorDialog("""This plugin requires clij to function. 
 	
 	To install please follow these instructions: 
 	
 	1. Click Help>Update> Manage update sites
-	2. Make sure the "clij2" update site is selected.
+	2. Make sure the "clij2" and "clij" update sites are selected.
 	3. Click Close> Apply changes.
 	4. Close and reopen ImageJ""")
 
