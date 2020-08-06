@@ -10,3 +10,10 @@ By comparing my watershed to non watersheded binary maps I can create a map of t
 I run a connected components analysis to generate a label map of the watersheded nuclei, and then dilate the labelmap on zero pixels only to fill all the space. I then multiply this by the orginal threshold image to get a a good segmentation with good enough split objects. But this will give incorrect labelling to the 'lost nuclei' present in the image.
 
 To correct this, I run a connected components on the 'lost nuclei' map, to generate  labels, and add on the max value of the OTHER label map. Then I use maximumImage to superimpose these labels on the other label map to get my FINAL label map.
+
+
+
+
+Timeseries segmentation and ratiometric analysis
+
+Built upon the nuclear segmentation tool. Gives a dialog with segmentation settings, which can be adjusted in real time with a live labelmap preview of frame 1.THe chosen settings will then be applied to the time series and the data for emission ratio calculation etc are output to a resultstable. Voxels saturated in the donor or emission (FRET) channels are excluded from analysis.
