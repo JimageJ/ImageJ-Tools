@@ -407,7 +407,7 @@ stats=StackStatistics(conFRETImp2)
 conFRETImp2 = CompositeImage(conFRETImp2, CompositeImage.COMPOSITE)  
 IJ.setMinAndMax(conFRETImp2, 500, 3000)
 conFRETImp2.show()
-IJ.run("16_color_ramp")
+IJ.run("16_colors")
 	
 
 conFRETProjImp= ImagePlus( "Max Z  projection of emission ratios X1000 of "+ originalTitle, conFRETProjImpStack)
@@ -417,7 +417,7 @@ stats=StackStatistics(conFRETProjImp)
 IJ.setMinAndMax(conFRETProjImp, 500, 3000)
 conFRETProjImp = CompositeImage(conFRETProjImp, CompositeImage.COMPOSITE)  
 conFRETProjImp.show()
-IJ.run("16_color_ramp")
+IJ.run("16_colors")
 	
 conlabelImp= ImagePlus("Label map "+ originalTitle, conlabelImpStack)
 conlabelImp.setDimensions(1, imp1.getNSlices(), imp1.getNFrames())
