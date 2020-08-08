@@ -72,8 +72,10 @@ def previewDialog(imp):
 	gd.addSlider("Small DoG sigma", 0.5, 10, 1, 0.1)
 	gd.addSlider("Large DoG sigma", 0.5, 20, 6 ,0.1)
 	gd.addCheckbox("TopHat background subtraction? (Slower, but better) ", True)
-	gd.addSlider("TopHat sigma", 5, 20, 10 ,0.1)
+	gd.addSlider("TopHat sigma", 5, 20, 8 ,0.1)
 	gd.setModal(False)
+	gd.addCheckbox("Manually set threshold? ", False)
+	gd.addSlider("Manual threshold", 0, 65534, 2000, 1)
 	gd.showDialog()
 
 		
@@ -96,6 +98,8 @@ def previewDialog(imp):
 	topHat=gd.checkboxes.get(0).getState()
 	topHatSigma=gd.sliders.get(2).getValue()/10.0
 
+	manualSegment = gd.checkboxes.get(1).getState()
+	manualThreshold=gd.sliders.get(3).getValue()/10.0
 	
 	segmentChannelOld=segmentChannel
 	thresholdMethodOld=thresholdMethod
@@ -104,9 +108,14 @@ def previewDialog(imp):
 	largeDoGSigmaOld= largeDoGSigma
 	topHatOld=topHat
 	topHatSigmaOld=topHatSigma
+	manualSegmentOld= manualSegment
+	manualThresholdOld=manualThreshold
+	
 	clij2.clear()
 	gfx7=clij2.create([imp.getWidth(), imp.getHeight()])
 	segmentImp=extractChannel(imp1, segmentChannel, 0)
+
+
 
 	gfx1=clij2.push(segmentImp)
 	gfx2=clij2.create(gfx1)
@@ -114,7 +123,7 @@ def previewDialog(imp):
 	gfx4=clij2.create(gfx1)
 	gfx5=clij2.create(gfx1)
 	gfx7=clij2.create([imp.getWidth(), imp.getHeight()])
-	gfx1,gfx2,gfx3,gfx4,gfx5 = segment(gfx1,gfx2,gfx3,gfx4,gfx5, gaussianSigma, thresholdMethod,maxIntensity, largeDoGSigma, pixelAspect, originalTitle, topHat,topHatSigma)
+	gfx1,gfx2,gfx3,gfx4,gfx5 = segment(gfx1,gfx2,gfx3,gfx4,gfx5, gaussianSigma, thresholdMethod,maxIntensity, largeDoGSigma, pixelAspect, originalTitle, topHat, topHatSigma , manualSegment, manualThreshold)
 	clij2.maximumZProjection(gfx5, gfx7)
 
 	labelPrevImp= clij2.pull(gfx7)
@@ -138,13 +147,19 @@ def previewDialog(imp):
 		topHat=gd.checkboxes.get(0).getState()
 		topHatSigma=gd.sliders.get(2).getValue()/10.0
 
-		if (segmentChannelOld!=segmentChannel or
-		thresholdMethodOld!=thresholdMethod or
-		maxIntensityOld!=maxIntensity or
-		gaussianSigmaOld!=gaussianSigma or
-		largeDoGSigmaOld!= largeDoGSigma or
-		topHatOld!=topHat or
-		topHatSigmaOld!=topHatSigma):
+		manualSegment = gd.checkboxes.get(1).getState()
+		manualThreshold = gd.sliders.get(3).getValue()/10.0
+		
+		if (segmentChannelOld !=segmentChannel or
+		thresholdMethodOld !=thresholdMethod or
+		maxIntensityOld !=maxIntensity or
+		gaussianSigmaOld !=gaussianSigma or
+		largeDoGSigmaOld != largeDoGSigma or
+		topHatOld !=topHat or
+		topHatSigmaOld !=topHatSigma or
+		manualSegmentOld != manualSegment or
+		manualThresholdOld !=manualThreshold
+		):
 
 			if segmentChannelOld!=segmentChannel:
 					clij2.clear()
@@ -155,7 +170,7 @@ def previewDialog(imp):
 					gfx4=clij2.create(gfx1)
 					gfx5=clij2.create(gfx1)
 					gfx7=clij2.create([imp.getWidth(), imp.getHeight()])
-			gfx1,gfx2,gfx3,gfx4,gfx5 = segment(gfx1,gfx2,gfx3,gfx4,gfx5, gaussianSigma, thresholdMethod,maxIntensity, largeDoGSigma, pixelAspect, originalTitle, topHat,topHatSigma)
+			gfx1,gfx2,gfx3,gfx4,gfx5 = segment(gfx1,gfx2,gfx3,gfx4,gfx5, gaussianSigma, thresholdMethod,maxIntensity, largeDoGSigma, pixelAspect, originalTitle, topHat,topHatSigma, manualSegment, manualThreshold)
 			clij2.maximumZProjection(gfx5, gfx7)
 			labelPrevImp.close()
 			labelPrevImp= clij2.pull(gfx7)
@@ -173,12 +188,15 @@ def previewDialog(imp):
 		topHatOld=topHat
 		topHatSigmaOld=topHatSigma
 
+		manualSegmentOld= manualSegment
+		manualThresholdOld=manualThreshold
+		
 		Thread.sleep(150)
 	labelPrevImp.close()
-	return segmentChannel, donorChannel, acceptorChannel, acceptorChannel2, thresholdMethod, maxIntensity, gaussianSigma, largeDoGSigma, topHat, topHatSigma
-
+	return segmentChannel, donorChannel, acceptorChannel, acceptorChannel2, thresholdMethod, maxIntensity, gaussianSigma, largeDoGSigma, topHat, topHatSigma, manualSegment, manualThreshold
 	
-def segment(gfx1,gfx2,gfx3,gfx4,gfx5, gaussianSigma, thresholdMethod,maxIntensity, largeDoGSigma, pixelAspect, originalTitle, topHat, topHatSigma):
+	
+def segment(gfx1,gfx2,gfx3,gfx4,gfx5, gaussianSigma, thresholdMethod,maxIntensity, largeDoGSigma, pixelAspect, originalTitle, topHat, topHatSigma, manualSegment, manualThreshold):
 	
 
 
@@ -190,8 +208,12 @@ def segment(gfx1,gfx2,gfx3,gfx4,gfx5, gaussianSigma, thresholdMethod,maxIntensit
 	else:
 		clij2.differenceOfGaussian3D(gfx1, gfx2, gaussianSigma, gaussianSigma, 1+(gaussianSigma-1)/pixelAspect, largeDoGSigma, largeDoGSigma,largeDoGSigma/pixelAspect)
 
-	#auto threshold and watershed to seed the object splitting
-	clij2.automaticThreshold(gfx2, gfx3, thresholdMethod)
+	if manualSegment == True :
+		clij2.threshold(gfx2, gfx3, manualThreshold)
+
+	else:
+		#auto threshold and watershed to seed the object splitting
+		clij2.automaticThreshold(gfx2, gfx3, thresholdMethod)
 	
 
 	clij2.watershed(gfx3,gfx2)
@@ -348,7 +370,7 @@ imp1= IJ.getImage()
 
 options= previewDialog(imp1)
 print(options)
-segmentChannel, donorChannel, acceptorChannel, acceptorChannel2, thresholdMethod, maxIntensity, gaussianSigma, largeDoGSigma, topHat, topHatSigma=options
+segmentChannel, donorChannel, acceptorChannel, acceptorChannel2, thresholdMethod, maxIntensity, gaussianSigma, largeDoGSigma, topHat, topHatSigma, manualSegment, manualThreshold=options
 totalFrames=imp1.getNFrames() +1
 
 #table is the final results table
@@ -375,7 +397,7 @@ for nFrame in xrange(1, totalFrames):
 	gfx3=clij2.create(gfx1)
 	gfx4=clij2.create(gfx1)
 	gfx5=clij2.create(gfx1)
-	gfx1,gfx2,gfx3,gfx4,gfx5 = segment(gfx1,gfx2,gfx3,gfx4,gfx5, gaussianSigma, thresholdMethod,maxIntensity, largeDoGSigma, pixelAspect, originalTitle, topHat,topHatSigma)
+	gfx1,gfx2,gfx3,gfx4,gfx5 = segment(gfx1,gfx2,gfx3,gfx4,gfx5, gaussianSigma, thresholdMethod,maxIntensity, largeDoGSigma, pixelAspect, originalTitle, topHat,topHatSigma, manualSegment, manualThreshold)
 	
 	thresholdImp = clij2.pull(gfx3)
 	IJ.setMinAndMax(thresholdImp, 0,1)
@@ -407,7 +429,7 @@ stats=StackStatistics(conFRETImp2)
 conFRETImp2 = CompositeImage(conFRETImp2, CompositeImage.COMPOSITE)  
 IJ.setMinAndMax(conFRETImp2, 500, 3000)
 conFRETImp2.show()
-IJ.run("16_colors")
+IJ.run("16_color_ramp")
 	
 
 conFRETProjImp= ImagePlus( "Max Z  projection of emission ratios X1000 of "+ originalTitle, conFRETProjImpStack)
@@ -417,7 +439,7 @@ stats=StackStatistics(conFRETProjImp)
 IJ.setMinAndMax(conFRETProjImp, 500, 3000)
 conFRETProjImp = CompositeImage(conFRETProjImp, CompositeImage.COMPOSITE)  
 conFRETProjImp.show()
-IJ.run("16_colors")
+IJ.run("16_color_ramp")
 	
 conlabelImp= ImagePlus("Label map "+ originalTitle, conlabelImpStack)
 conlabelImp.setDimensions(1, imp1.getNSlices(), imp1.getNFrames())
