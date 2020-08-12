@@ -17,3 +17,11 @@ To correct this, I run a connected components on the 'lost nuclei' map, to gener
 **Timeseries segmentation and ratiometric analysis for FRET**
 
 Built upon the nuclear segmentation tool, except with the option of a TopHat background removal filter is included. Gives a dialog with segmentation settings, which can be adjusted in real time with a live labelmap max projection preview of frame 1.The chosen settings will then be applied to the time series and the data for emission ratio calculation etc are output to a results table. This is useful for ratiometric biosensors. Voxels saturated in the **Donor** or **Emission (FRET)** channels are excluded from analysis.
+
+Installation:
+
+https://www.youtube.com/watch?v=_mALvThK24Y
+
+Usage:
+
+https://www.youtube.com/watch?v=N91ybNY7Doo
