@@ -75,7 +75,7 @@ def previewDialog(imp):
 	gd.addSlider("TopHat sigma", 5, 20, 8 ,0.1)
 	gd.setModal(False)
 	gd.addCheckbox("Manually set threshold? ", False)
-	gd.addSlider("Manual threshold", 0, 65534, 2000, 1)
+	gd.addSlider("Manual threshold", 10, 65534, 2000, 1)
 	gd.showDialog()
 
 		
@@ -99,7 +99,7 @@ def previewDialog(imp):
 	topHatSigma=gd.sliders.get(2).getValue()/10.0
 
 	manualSegment = gd.checkboxes.get(1).getState()
-	manualThreshold=gd.sliders.get(3).getValue()/10.0
+	manualThreshold=gd.sliders.get(3).getValue()
 	
 	segmentChannelOld=segmentChannel
 	thresholdMethodOld=thresholdMethod
@@ -112,17 +112,41 @@ def previewDialog(imp):
 	manualThresholdOld=manualThreshold
 	
 	clij2.clear()
-	gfx7=clij2.create([imp.getWidth(), imp.getHeight()])
+	
 	segmentImp=extractChannel(imp1, segmentChannel, 0)
 
+	try:
+		gfx1=clij2.push(segmentImp)
+		gfx2=clij2.create(gfx1)
+		gfx3=clij2.create(gfx1)
+		gfx4=clij2.create(gfx1)
+		gfx5=clij2.create(gfx1)
+		gfx7=clij2.create([imp.getWidth(), imp.getHeight()])
+	except:	
+		try:
+		
+			Thread.sleep(500)
+			print("Succeeded to sending to graphics card on the second time...")
+			gfx1=clij2.push(segmentImp)
+			gfx2=clij2.create(gfx1)
+			gfx3=clij2.create(gfx1)
+			gfx4=clij2.create(gfx1)
+			gfx5=clij2.create(gfx1)
+			gfx7=clij2.create([imp.getWidth(), imp.getHeight()])
+		except:
+			errorDialog("""Could not send image to graphics card, it may be too large!
+		
+			Easy solutions: Try	processing as 8-bit, cropping or scaling the image, or
+			select a different CLIJ2 GPU.
+
+			This issue is often intermittent, so trying again may also work! 
+
+			See the "Big Images on x graphics cards' notes at:
+			https://clij2.github.io/clij2-docs/troubleshooting for more solutions
+			
+			"""	+ str(clij2.reportMemory()) )
 
 
-	gfx1=clij2.push(segmentImp)
-	gfx2=clij2.create(gfx1)
-	gfx3=clij2.create(gfx1)
-	gfx4=clij2.create(gfx1)
-	gfx5=clij2.create(gfx1)
-	gfx7=clij2.create([imp.getWidth(), imp.getHeight()])
 	gfx1,gfx2,gfx3,gfx4,gfx5 = segment(gfx1,gfx2,gfx3,gfx4,gfx5, gaussianSigma, thresholdMethod,maxIntensity, largeDoGSigma, pixelAspect, originalTitle, topHat, topHatSigma , manualSegment, manualThreshold)
 	clij2.maximumZProjection(gfx5, gfx7)
 
@@ -148,7 +172,7 @@ def previewDialog(imp):
 		topHatSigma=gd.sliders.get(2).getValue()/10.0
 
 		manualSegment = gd.checkboxes.get(1).getState()
-		manualThreshold = gd.sliders.get(3).getValue()/10.0
+		manualThreshold = gd.sliders.get(3).getValue()
 		
 		if (segmentChannelOld !=segmentChannel or
 		thresholdMethodOld !=thresholdMethod or
@@ -191,7 +215,7 @@ def previewDialog(imp):
 		manualSegmentOld= manualSegment
 		manualThresholdOld=manualThreshold
 		
-		Thread.sleep(150)
+		Thread.sleep(200)
 	labelPrevImp.close()
 	return segmentChannel, donorChannel, acceptorChannel, acceptorChannel2, thresholdMethod, maxIntensity, gaussianSigma, largeDoGSigma, topHat, topHatSigma, manualSegment, manualThreshold
 	
@@ -298,22 +322,31 @@ def fretCalculations(imp1, nFrame, donorChannel, acceptorChannel, acceptorChanne
 	
 			table.incrementCounter()
 			table.addValue("Frame (Time)", nFrame)
+			table.addValue("Label", i)
+			table.addValue("Emission ratio", acceptorChIntensity[i]/donorChIntensity[i])
+
+			table.addValue("Mean donor emission", results.getValue("MEAN_INTENSITY",i))
+			table.addValue("Mean acceptor emission (FRET)", results2.getValue("MEAN_INTENSITY",i))
+			table.addValue("Mean acceptor emission", results3.getValue("MEAN_INTENSITY",i))
+
+
+			
+			table.addValue("Sum donor emission", donorChIntensity[i])
+			table.addValue("Sum acceptor emission (FRET)", acceptorChIntensity[i])
+			table.addValue("Sum acceptor emission", results3.getValue("SUM_INTENSITY",i))
+
+			
 			table.addValue("Volume", cal.pixelWidth * cal.pixelHeight * cal.pixelDepth * results.getValue("PIXEL_COUNT",i))
 			table.addValue("Pixel count", results.getValue("PIXEL_COUNT",i))
 			table.addValue("x", cal.pixelWidth*results.getValue("CENTROID_X",i))
 			table.addValue("y", cal.pixelHeight*results.getValue("CENTROID_Y",i))
 			table.addValue("z", cal.pixelDepth*results.getValue("CENTROID_Z",i))
-			table.addValue("Label", i)
-			table.addValue("Sum donor emission", donorChIntensity[i])
-			table.addValue("Sum acceptor emission (FRET)", acceptorChIntensity[i])
-			table.addValue("Sum acceptor emission", results3.getValue("SUM_INTENSITY",i))
-			table.addValue("Emission ratio", acceptorChIntensity[i]/donorChIntensity[i])
 			table.addValue("File name", originalTitle)
 		else:
 			#must write in the zeros as this array is used to generate the map of emission ratios
 			FRET.append(0)
 			
-			
+	
 	
 	
 	table.show("Results of " + originalTitle)
@@ -429,7 +462,7 @@ stats=StackStatistics(conFRETImp2)
 conFRETImp2 = CompositeImage(conFRETImp2, CompositeImage.COMPOSITE)  
 IJ.setMinAndMax(conFRETImp2, 500, 3000)
 conFRETImp2.show()
-IJ.run("16_colors")
+IJ.run("16_color_ramp")
 	
 
 conFRETProjImp= ImagePlus( "Max Z  projection of emission ratios X1000 of "+ originalTitle, conFRETProjImpStack)
@@ -439,7 +472,7 @@ stats=StackStatistics(conFRETProjImp)
 IJ.setMinAndMax(conFRETProjImp, 500, 3000)
 conFRETProjImp = CompositeImage(conFRETProjImp, CompositeImage.COMPOSITE)  
 conFRETProjImp.show()
-IJ.run("16_colors")
+IJ.run("16_color_ramp")
 	
 conlabelImp= ImagePlus("Label map "+ originalTitle, conlabelImpStack)
 conlabelImp.setDimensions(1, imp1.getNSlices(), imp1.getNFrames())
