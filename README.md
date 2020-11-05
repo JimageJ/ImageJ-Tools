@@ -14,9 +14,11 @@ To correct this, I run a connected components on the 'lost nuclei' map, to gener
 
 
 
-**Timeseries segmentation and ratiometric analysis for FRET**
+**FRETENATOR_Segment_and_ratio**
 
 Built upon the nuclear segmentation tool, except with the option of a TopHat background removal filter is included. Gives a dialog with segmentation settings, which can be adjusted in real time with a live labelmap max projection preview of frame 1.The chosen settings will then be applied to the time series and the data for emission ratio calculation etc are output to a results table. This is useful for ratiometric biosensors. Voxels saturated in the **Donor** or **Emission (FRET)** channels are excluded from analysis.
+
+In the latest update, the option of a "nearest point Z projection" is included, which has outline drawing between segmented objects. This will make pretty Z projections where the differnt objects are discernable and overlayed properly.
 
 Installation:
 
