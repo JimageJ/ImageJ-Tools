@@ -18,9 +18,9 @@ To correct this, I run a connected components on the 'lost nuclei' map, to gener
 
 Built upon the nuclear segmentation tool, except with the option of a TopHat background removal filter is included. Gives a dialog with segmentation settings, which can be adjusted in real time with a live labelmap max projection preview of frame 1.The chosen settings will then be applied to the time series and the data for emission ratio calculation etc are output to a results table. This is useful for ratiometric biosensors. Voxels saturated in the **Donor** or **Emission (FRET)** channels are excluded from analysis.
 
-In the latest update, the option of a "nearest point Z projection" is included, which has outline drawing between segmented objects. This will make pretty Z projections where the differnt objects are discernable and overlayed properly.
+In the latest update, the option of a "nearest point Z projection" is included, which has outline drawing between segmented objects. This will make pretty Z projections where the different objects are discernable and overlayed properly.
 
-![nlsABACUS1-2 ABA treatment quantified and rendered with FRETENATOR](https://github.com/JimageJ/ImageJTools/blob/master/Nearest%20point%20emission%20ratios%20of%201-2%20concatenated%20drift%20corrected.gif)
+![nlsABACUS1-2u ABA treatment quantified and rendered with FRETENATOR](https://github.com/JimageJ/ImageJTools/blob/master/Nearest%20point%20emission%20ratios%20of%201-2%20concatenated%20drift%20corrected.gif)
 
 
 Installation:
