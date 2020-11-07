@@ -20,6 +20,9 @@ Built upon the nuclear segmentation tool, except with the option of a TopHat bac
 
 In the latest update, the option of a "nearest point Z projection" is included, which has outline drawing between segmented objects. This will make pretty Z projections where the differnt objects are discernable and overlayed properly.
 
+![nlsABACUS1-2 ABA treatment quantified and rendered with FRETENATOR](https://github.com/JimageJ/ImageJTools/blob/master/Nearest%20point%20emission%20ratios%20of%201-2%20concatenated%20drift%20corrected.gif)
+
+
 Installation:
 
 https://www.youtube.com/watch?v=_mALvThK24Y
