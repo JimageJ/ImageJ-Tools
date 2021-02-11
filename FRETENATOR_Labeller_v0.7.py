@@ -33,7 +33,7 @@ class previewLabelerAndListeners(ActionListener, AdjustmentListener):
 	'''Class which unique function is to handle the button clics'''
 	def __init__(self, labelPreviewImp, maxZPreviewImp, maxYPreviewImp, src,results,identifiers,nucLoc,zs, slider1,slider2, gd):
 
-		#labelPreviewImp -  label image preview; maxZPreviewImp - maxZ label preview; maxYPreviewImp - maxY label preview
+		"""labelPreviewImp -  label image preview; maxZPreviewImp - maxZ label preview; maxYPreviewImp - maxY label preview"""
 		self.labelPreviewImp=labelPreviewImp
 		self.maxZPreviewImp=maxZPreviewImp
 		self.maxYPreviewImp=maxYPreviewImp
@@ -84,7 +84,17 @@ class previewLabelerAndListeners(ActionListener, AdjustmentListener):
 		dst.close()
 		dst2.close()
 		src2.close()
-	
+
+
+		labelWindow = self.labelPreviewImp.getWindow()
+		x=labelWindow.getLocation().x
+		y=labelWindow.getLocation().y
+		
+		maxZPreviewWindow=self.maxZPreviewImp.getWindow()
+		maxZPreviewWindow.setLocation(x, y+height+50)
+		maxYPreviewWindow=self.maxYPreviewImp.getWindow()
+		maxYPreviewWindow.setLocation(x+width/2, y+height+50)
+		print labelWindow
 	def actionPerformed(self, event): 
 		"""event: actionlistener does stuff on buttonpress"""
 
@@ -273,7 +283,7 @@ def dialog(imp1, labelPreviewImp,maxZPreviewImp,maxYPreviewImp, src, results,ide
 
 def createLabelColorBar():
 
-	imp7 = ImagePlus("ramp", ShortProcessor(180, 20))
+	imp7 = ImagePlus("labelColorBar", ShortProcessor(180, 20))
 	ip7 = imp7.getProcessor()
 	pix=ip7.getPixels()
 	n_pixels = len(pix)
@@ -297,6 +307,7 @@ def createLabelColorBar():
 	imp7.show()
 	IJ.run("glasbey_on_dark")
 	imp7=imp7.flatten()
+
 	return imp7
 
 # *****************************body of code starts****************************************
@@ -315,7 +326,7 @@ nucleiLabels=[]
 src=clij2.push(imp1)
 
 size=stats.max
-labelValues=[1]*int(size)
+labelValues=[1]*int(size+1)
 labelValues[0]=0
 
 fp= ShortProcessor(len(labelValues), 1, labelValues, None)
@@ -342,6 +353,14 @@ clij2.maximumYProjection(dst,dst3)
 maxYPreviewImp=clij2.pull(dst3)
 previewDisplaySettings(maxYPreviewImp, "maxY label preview", 50)
 
+labelWindow = labelPreviewImp.getWindow()
+x=labelWindow.getLocation().x
+y=labelWindow.getLocation().y
+
+maxZPreviewWindow=maxZPreviewImp.getWindow()
+maxZPreviewWindow.setLocation(x, y+height+50)
+maxYPreviewWindow=maxYPreviewImp.getWindow()
+maxYPreviewWindow.setLocation(x+width/2, y+height+50)
 
 
 dst.close()
@@ -378,5 +397,5 @@ nucLoc= map(lambda i : ys[i] * width +xs[i], range(len(xs)))
 
 labelColorBarImp= createLabelColorBar()
 
-
+#print dir(WM)
 dialog(imp1, labelPreviewImp, maxZPreviewImp, maxYPreviewImp, src, results, identifiers,nucLoc,zs, labelColorBarImp)
