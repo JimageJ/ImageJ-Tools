@@ -31,7 +31,7 @@ Usage:
 
 https://www.youtube.com/watch?v=N91ybNY7Doo
 
-**FRETENATOR_labeller**
+**FRETENATOR_Labeller**
 
 A follow on tool for after segmentations where users can categorise the ROI in their segmented images. As a work in progress it currently works on single timepoint 2 or 3D label image, allowing users to visually assign labels to one of 10 categories, but doesn't output the results table yet. It will work with any labelmaps up to 4095 labels currently.
 
