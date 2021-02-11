@@ -1,4 +1,4 @@
-# ImageJTools
+# ImageJ Tools
 
 
 **Nuclear segmentation**
