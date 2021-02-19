@@ -35,3 +35,7 @@ https://www.youtube.com/watch?v=N91ybNY7Doo
 
 A follow on tool for after segmentations where users can categorise the ROI in their segmented images. As a work in progress it currently works on single timepoint 3D label images, allowing users to visually assign labels to one of 10 categories. Results are either output to an existing results table or can be used to measure a chosen image. It will work with labelmaps up to 4095 labels currently.
 
+Installation and usage:
+
+https://www.youtube.com/watch?v=1rTyM1VBkFc
+
