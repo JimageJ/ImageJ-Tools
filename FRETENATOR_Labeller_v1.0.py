@@ -4,7 +4,7 @@
 								Started: 2021-01-30	
 							 		@BotanicalJim
 							james.rowe at slcu.cam.ac.uk
-									Version 0.7
+									Version 1.0
 
 ******************************************************************************************
 """
@@ -43,7 +43,7 @@ class previewLabelerAndListeners(ActionListener, AdjustmentListener):
 		
 		self.stats=StackStatistics(imp1)
 		self.src=clij2.push(imp1)
-		
+		self.cal = imp1.getCalibration()
 		self.size=int(self.stats.max)
 		self.labelValues=[1]*int(self.size+1)
 		self.labelValues[0]=0
@@ -117,7 +117,8 @@ class previewLabelerAndListeners(ActionListener, AdjustmentListener):
 		
 		clij2.replaceIntensities(self.src, src2, dst)
 		self.labelPreviewImp=clij2.pull(dst)
-		previewDisplaySettings(self.labelPreviewImp, "label preview", 100)
+		previewDisplaySettings(self.labelPreviewImp, "label preview", 100, self.cal)
+		
 		try:
 			self.labelPreviewImp.setSlice(self.current)
 		except:
@@ -127,12 +128,12 @@ class previewLabelerAndListeners(ActionListener, AdjustmentListener):
 		dst2=clij2.create( width, height, 1)
 		clij2.maximumZProjection(dst,dst2)
 		self.maxZPreviewImp=clij2.pull(dst2)
-		previewDisplaySettings(self.maxZPreviewImp, "maxZ label preview", 50)
+		previewDisplaySettings(self.maxZPreviewImp, "maxZ label preview", 50, self.cal)
 		
 		dst3=clij2.create( width, depth, 1)
 		clij2.maximumYProjection(dst,dst3)
 		self.maxYPreviewImp=clij2.pull(dst3)
-		previewDisplaySettings(self.maxYPreviewImp, "maxY label preview", 50)
+		previewDisplaySettings(self.maxYPreviewImp, "maxY label preview", 50, self.cal)
 		
 		
 		dst3.close()
@@ -283,7 +284,7 @@ def errorDialog(message):
 	gd.showDialog()
 	return
 
-def previewDisplaySettings(image, title, zoom):
+def previewDisplaySettings(image, title, zoom, cal):
 	"""Apply wanted settings for previews"""
 	ImageConverter.setDoScaling(0)
 	ImageConverter(image).convertToGray16()
@@ -291,6 +292,7 @@ def previewDisplaySettings(image, title, zoom):
 	IJ.run("glasbey_on_dark")
 	IJ.setMinAndMax(image, 0, 255)
 	image.setTitle(title)
+	image.setCalibration(cal)
 	IJ.run("Set... ", "zoom="+str(zoom))
 
 
@@ -463,9 +465,17 @@ else:
 	resultsName="Results table"
 collumnNumber=rt.getLastColumn()+1
 for i in range(len(listOfNames)):
-		j=rt.getValue("IDENTIFIER",i)
+		try:
+			j=rt.getValue("Identifier",i)
+			
+		except:
+			try:
+				j=rt.getValue("Label",i) 
+			except:
+				j=i
 		rt.setValue("Label name", i,listOfNames[int(j)])
 		rt.setValue("Label value", i,test.labelValues[int(j)])
 
 rt.show(resultsName+ " with labels")
 clij2.clear()
+labelColorBarImp.close()
