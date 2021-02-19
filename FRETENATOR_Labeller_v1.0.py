@@ -22,7 +22,7 @@ from java.awt  				import GridLayout, Font, Color
 from ij.measure 			import ResultsTable
 from ij.gui 				import Overlay
 from ij.gui 				import TextRoi, Roi
-
+from java.lang 				import Thread
 
 
 # *******************************classes*****************************************
@@ -30,18 +30,69 @@ from ij.gui 				import TextRoi, Roi
 
 
 class previewLabelerAndListeners(ActionListener, AdjustmentListener):
+
+
+
+
+
 	'''Class which unique function is to handle the button clics'''
-	def __init__(self, labelPreviewImp, maxZPreviewImp, maxYPreviewImp, src,results,identifiers,nucLoc,zs, slider1,slider2, gd):
+	def __init__(self,imp1, slider1,slider2, gd):
+		self.height=imp1.getHeight()
+		self.width=imp1.getWidth()
+		self.depth=imp1.getStackSize()
+		
+		self.stats=StackStatistics(imp1)
+		self.src=clij2.push(imp1)
+		
+		self.size=int(self.stats.max)
+		self.labelValues=[1]*int(self.size+1)
+		self.labelValues[0]=0
+				
+		self.nucleiLabels=range(self.size+1)
+		self.results=ResultsTable()
+		
+		self.renderPreview(1)
+		#self.results.show("results")
+		self.labelDict={0:[0], 1: sorted(self.nucleiLabels[1:]), 2:[], 3:[], 4:[], 5:[], 6:[], 7:[], 8:[], 9:[], 10:[]}
+		
+		self.identifiers=[]
+		self.xs=[]
+		self.ys=[]
+		self.zs=[]
+		self.bbz=[]
+		self.bbze=[]
+		
+		
+		for i in range(int(self.size+1)):
+			try:
+				
+				self.xs.append(int(self.results.getValue("CENTROID_X",i)))
+				self.ys.append(int(self.results.getValue("CENTROID_Y",i)))
+				self.zs.append(int(self.results.getValue("CENTROID_Z",i)))
+				self.bbz.append(self.results.getValue("BOUNDING_BOX_Z",i)+1)
+				self.bbze.append(self.results.getValue("BOUNDING_BOX_END_Z",i)+1)
+				self.identifiers.append(self.results.getValue("IDENTIFIER", i))
+			except:
+				print i
+				self.identifiers.append(self.results.getValue("IDENTIFIER", i))
+				self.xs.append(int(width/2))
+				self.ys.append(int(height/2))
+				self.zs.append(int(depth/2))
+				self.bbz.append(1)
+				self.bbze.append(1)
+		
+		self.nucLoc= map(lambda i : self.ys[i] * width +self.xs[i], range(len(self.xs)))
+
+
+
+
 
 		"""labelPreviewImp -  label image preview; maxZPreviewImp - maxZ label preview; maxYPreviewImp - maxY label preview"""
-		self.labelPreviewImp=labelPreviewImp
-		self.maxZPreviewImp=maxZPreviewImp
-		self.maxYPreviewImp=maxYPreviewImp
-		self.src=src
-		self.results=results
-		self.identifiers=identifiers
-		self.nucLoc=nucLoc
-		self.zs=zs
+		
+		
+		
+		
+		
 		self.slider1=slider1
 		self.slider2=slider2
 		self.gd=gd
@@ -49,7 +100,7 @@ class previewLabelerAndListeners(ActionListener, AdjustmentListener):
 		
 		
 		
-	def renderPreview(self):
+	def renderPreview(self,runStats):
 		try:
 			self.labelPreviewImp.close()
 			self.maxZPreviewImp.close()
@@ -58,17 +109,21 @@ class previewLabelerAndListeners(ActionListener, AdjustmentListener):
 			print "imps already closed"
 		
 		
-		fp= ShortProcessor(len(labelValues), 1, labelValues, None)
+		fp= ShortProcessor(len(self.labelValues), 1, self.labelValues, None)
 		labelerImp= ImagePlus("labeler", fp)
 		src2=clij2.push(labelerImp)
-		dst=clij2.create(src)
+		dst=clij2.create(self.src)
 		labelerImp.close()
 		
 		clij2.replaceIntensities(self.src, src2, dst)
 		self.labelPreviewImp=clij2.pull(dst)
 		previewDisplaySettings(self.labelPreviewImp, "label preview", 100)
-		self.labelPreviewImp.setSlice(self.current)
-
+		try:
+			self.labelPreviewImp.setSlice(self.current)
+		except:
+			pass
+		if runStats:
+			clij2.statisticsOfBackgroundAndLabelledPixels(dst, self.src, self.results)
 		dst2=clij2.create( width, height, 1)
 		clij2.maximumZProjection(dst,dst2)
 		self.maxZPreviewImp=clij2.pull(dst2)
@@ -139,18 +194,19 @@ class previewLabelerAndListeners(ActionListener, AdjustmentListener):
 		if Source.label[:5]=="label":
 			[int(s) for s in Source.label.split() if s.isdigit()]
 			s=int(s)
+			print "s " +str(s) 
 			#try:
 			roi1 = self.labelPreviewImp.getRoi()
 			selectedPixels=roi1.getContainedPoints()
 			roiPixelLoc= map(lambda i : i.y * width +i.x, selectedPixels)
 	
-			pixels2=filter(lambda i: nucLoc[i] in roiPixelLoc, xrange(len(nucLoc)))
+			pixels2=filter(lambda i: self.nucLoc[i] in roiPixelLoc, xrange(len(self.nucLoc)))
 
 			#on first run set self.top and self.bottom to top and bottom of the stack
 			try: print self.top
 			except:  self.top=1
 			try: print self.bottom
-			except: self.bottom=labelPreviewImp.getNSlices()
+			except: self.bottom=self.labelPreviewImp.getNSlices()
 			choice= self.gd.getChoices().get(0)
 
 			if choice.getSelectedItem()== "Slice":
@@ -160,26 +216,29 @@ class previewLabelerAndListeners(ActionListener, AdjustmentListener):
 				top=self.top
 				bottom=self.bottom
 			
-			pixels2=filter(lambda i :max(bbze[i],bottom)-min(top,bbz[i]) <= (bbze[i]-bbz[i])+ (bottom-top),pixels2)
-			nucleiLabels=map(lambda i : i+1,pixels2)
+			pixels2=filter(lambda i :max(self.bbze[i],bottom)-min(top,self.bbz[i]) <= (self.bbze[i]-self.bbz[i])+ (bottom-top),pixels2)
+			self.nucleiLabels=map(lambda i : i,pixels2)
 
 			#print(map(lambda i:self.zs[i], pixels2))
 			#print len(pixels2)
 
 			
-			labelDict[s] =nucleiLabels+labelDict[s]
-			labelDict[s] =sorted(list(set(labelDict[s])))
+			self.labelDict[s] =self.nucleiLabels+self.labelDict[s]
+			self.labelDict[s] =sorted(list(set(self.labelDict[s])))
 			
 			
-			for key in labelDict:
+			for key in self.labelDict:
 				if key != s :
-					labelDict[key]=filter(lambda x: x not in labelDict[s], labelDict[key])
+					self.labelDict[key]=filter(lambda x: x not in self.labelDict[s], self.labelDict[key])
 			#print labelDict
-			for key in labelDict:
-				for value in labelDict[int(key)]:
-					labelValues[value]=int(key)
-			labelValues[0]=0
-		self.renderPreview()
+			for key in self.labelDict:
+				for value in self.labelDict[int(key)]:
+					self.labelValues[value]=int(key)
+		self.labelValues[0]=0
+		self.labelDict[0]=[0]
+		for key in self.labelDict.keys()[1:]:
+			self.labelDict[key]=filter(lambda x: x != 0, self.labelDict[key])
+		self.renderPreview(0)
 		
 		#except:
 		#	print "No roi"
@@ -217,12 +276,20 @@ class previewLabelerAndListeners(ActionListener, AdjustmentListener):
 
 # *******************************functions************************************************
 
+def errorDialog(message):
+
+	gd = NonBlockingGenericDialog("Error")
+	gd.addMessage(message)
+	gd.showDialog()
+	return
+
 def previewDisplaySettings(image, title, zoom):
 	"""Apply wanted settings for previews"""
+	ImageConverter.setDoScaling(0)
 	ImageConverter(image).convertToGray16()
 	image.show()
-	IJ.setMinAndMax(image, 0, 255)
 	IJ.run("glasbey_on_dark")
+	IJ.setMinAndMax(image, 0, 255)
 	image.setTitle(title)
 	IJ.run("Set... ", "zoom="+str(zoom))
 
@@ -242,14 +309,14 @@ def extractFrame(imp, nFrame):
 	comp.show()
 	return comp
 		
-def dialog(imp1, labelPreviewImp,maxZPreviewImp,maxYPreviewImp, src, results,identifiers,nucLoc,zs, labelColorBarImp):
+def dialog(imp1, labelColorBarImp):
 	gd = GenericDialogPlus("ROI labeller")
 	categories=11
 
 	#placeholder slider variables so the class can be initiated
 	slider1=0
 	slider2=0
-	test=previewLabelerAndListeners(labelPreviewImp, maxZPreviewImp, maxYPreviewImp, src, results,identifiers,nucLoc,zs, slider1,slider2, gd)
+	test=previewLabelerAndListeners(imp1, slider1,slider2, gd)
 	
 
 	for i in range(1,categories):
@@ -280,6 +347,51 @@ def dialog(imp1, labelPreviewImp,maxZPreviewImp,maxYPreviewImp, src, results,ide
 	
 	gd.showDialog()
 
+
+	while ((not gd.wasCanceled()) and not (gd.wasOKed())):
+		Thread.sleep(50)
+	return test
+
+
+def selectionDialog(categories,labelColorBarImp):
+	gd = GenericDialogPlus("ROI labeller -image picking")
+	imps = WM.getImageTitles()
+	nonimages=WM.getNonImageTitles()
+	
+	gd.addChoice("Image to quantify", imps, imps[0])
+	try:
+		gd.addChoice("FRETENTATOR results table", nonimages, nonimages[0])
+		fail=0
+	except:
+		gd.addMessage("No results table open")
+		fail=1
+	gd.addImage(labelColorBarImp)
+	for i in range(categories):
+		gd.addStringField("Label "+str(i) +" name:", "Label "+str(i))
+
+	gd.addChoice("Quantify an open image or add labels to open results table?", ["Image", "Results table"], "Image")
+	
+	#quantImp= IJ.getImage(gd.getNextChoice())
+	
+	
+	gd.setModal(False)
+	gd.showDialog()
+	while ((not gd.wasCanceled()) and not (gd.wasOKed())):
+		Thread.sleep(50)
+
+
+	names=dict()
+	
+	for i in range(categories):
+		names[i]=str(gd.getNextString())
+	imageName=gd.getNextChoice()
+	if fail==0:	
+		resultsName=gd.getNextChoice()
+		imageOrTable=gd.getNextChoice()
+	else:
+		imageOrTable="Image"
+		resultsName=0
+	return names, imageName, resultsName, imageOrTable
 
 def createLabelColorBar():
 
@@ -322,80 +434,38 @@ width=imp1.getWidth()
 depth=imp1.getStackSize()
 
 stats=StackStatistics(imp1)
-nucleiLabels=[]
-src=clij2.push(imp1)
 
-size=stats.max
-labelValues=[1]*int(size+1)
-labelValues[0]=0
-
-fp= ShortProcessor(len(labelValues), 1, labelValues, None)
-labelerImp= ImagePlus("labeler", fp)
-src2=clij2.push(labelerImp)
-dst= clij2.create(src)
-clij2.replaceIntensities(src, src2, dst)
-
-results=ResultsTable()
-
-labelPreviewImp=clij2.pull(dst)
-ImageConverter.setDoScaling(0)
-previewDisplaySettings(labelPreviewImp, "label preview", 100)
-clij2.statisticsOfLabelledPixels(dst, src, results)
-#results.show("reslets")
-
-dst2=clij2.create( width, height, 1)
-clij2.maximumZProjection(dst, dst2)
-maxZPreviewImp=clij2.pull(dst2)
-previewDisplaySettings(maxZPreviewImp, "maxZ label preview", 50)
-
-dst3=clij2.create( width, depth, 1)
-clij2.maximumYProjection(dst,dst3)
-maxYPreviewImp=clij2.pull(dst3)
-previewDisplaySettings(maxYPreviewImp, "maxY label preview", 50)
-
-labelWindow = labelPreviewImp.getWindow()
-x=labelWindow.getLocation().x
-y=labelWindow.getLocation().y
-
-maxZPreviewWindow=maxZPreviewImp.getWindow()
-maxZPreviewWindow.setLocation(x, y+height+50)
-maxYPreviewWindow=maxYPreviewImp.getWindow()
-maxYPreviewWindow.setLocation(x+width/2, y+height+50)
-
-
-dst.close()
-dst2.close()
-src2.close()
-dst3.close()
-
-labelDict={1:sorted(nucleiLabels), 2:[], 3:[], 4:[], 5:[], 6:[], 7:[], 8:[], 9:[], 10:[]}
-
-identifiers=[]
-xs=[]
-ys=[]
-zs=[]
-bbz=[]
-bbze=[]
-for i in range(int(size)):
-	try:
-		
-		xs.append(int(results.getValue("CENTROID_X",i)))
-		ys.append(int(results.getValue("CENTROID_Y",i)))
-		zs.append(int(results.getValue("CENTROID_Z",i)))
-		bbz.append(results.getValue("BOUNDING_BOX_Z",i)+1)
-		bbze.append(results.getValue("BOUNDING_BOX_END_Z",i)+1)
-		identifiers.append(results.getValue("IDENTIFIER", i))
-	except:
-		identifiers.append(results.getValue("IDENTIFIER", i))
-		xs.append(int(width/2))
-		ys.append(int(height/2))
-		zs.append(int(depth/2))
-		bbz.append(1)
-		bbze.append(1)
-
-nucLoc= map(lambda i : ys[i] * width +xs[i], range(len(xs)))
 
 labelColorBarImp= createLabelColorBar()
-
+categories=11
 #print dir(WM)
-dialog(imp1, labelPreviewImp, maxZPreviewImp, maxYPreviewImp, src, results, identifiers,nucLoc,zs, labelColorBarImp)
+test = dialog(imp1, labelColorBarImp)
+
+names, imageName, resultsName, imageOrTable = selectionDialog(categories,labelColorBarImp)
+
+listOfNames  =["Unnamed"]*len(test.labelValues)
+
+for key in test.labelDict.keys():
+	
+	for value in test.labelDict[key]:
+		listOfNames[value]=names[key]
+		
+
+if imageOrTable == "Results table":
+	rt = ResultsTable.getResultsTable(resultsName)
+
+else:
+	measureImp=WM.getImage(imageName)
+	src2=clij2.push(measureImp)
+	rt = ResultsTable()
+	clij2.statisticsOfBackgroundAndLabelledPixels(src2, test.src,rt)
+	src2.close()
+	resultsName="Results table"
+collumnNumber=rt.getLastColumn()+1
+for i in range(len(listOfNames)):
+		j=rt.getValue("IDENTIFIER",i)
+		rt.setValue("Label name", i,listOfNames[int(j)])
+		rt.setValue("Label value", i,test.labelValues[int(j)])
+
+rt.show(resultsName+ " with labels")
+clij2.clear()
