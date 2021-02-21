@@ -1,7 +1,7 @@
 # ImageJ Tools
 
 
-**Nuclear segmentation**
+**Nuclear segmentation (Alpha)**
 
 The segmentation tool works by a DoG filter, then Otsu to generate a binary map. I then use a watershed to split objects, but a 3D watershed it a little too severe and causes the loss of many nuclei and many shrink down much smaller than their original size. 
 
@@ -14,7 +14,7 @@ To correct this, I run a connected components on the 'lost nuclei' map, to gener
 
 
 
-**FRETENATOR_Segment_and_ratio**
+**FRETENATOR_Segment_and_ratio (Beta)**
 
 Built upon the nuclear segmentation tool, except with the option of a TopHat background removal filter is included. Gives a dialog with segmentation settings, which can be adjusted in real time with a live labelmap max projection preview of frame 1.The chosen settings will then be applied to the time series and the data for emission ratio calculation etc are output to a results table. This is useful for ratiometric biosensors. Voxels saturated in the **Donor** or **Emission (FRET)** channels are excluded from analysis.
 
@@ -31,7 +31,7 @@ Usage:
 
 https://www.youtube.com/watch?v=N91ybNY7Doo
 
-**FRETENATOR_Labeller**
+**FRETENATOR_Labelle (Alpha)**
 
 A follow on tool for after segmentations where users can categorise the ROI in their segmented images. As a work in progress it currently works on single timepoint 3D label images, allowing users to visually assign labels to one of 10 categories. Results are either output to an existing results table or can be used to measure a chosen image. It will work with labelmaps up to 4095 labels currently.
 
