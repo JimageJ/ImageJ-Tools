@@ -371,7 +371,7 @@ def selectionDialog(categories,labelColorBarImp):
 	for i in range(categories):
 		gd.addStringField("Label "+str(i) +" name:", "Label "+str(i))
 
-	gd.addChoice("Quantify an open image or add labels to open results table?", ["Image", "Results table"], "Image")
+	gd.addChoice("Quantify an open image or add labels to open results table?", ["Image", "Results table"], "Results table")
 	
 	#quantImp= IJ.getImage(gd.getNextChoice())
 	
