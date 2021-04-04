@@ -37,9 +37,13 @@ https://www.youtube.com/watch?v=N91ybNY7Doo
 FRETENATOR_Segment_and_ratio produces a Results Table and the following images:
 
 • Threshold map:    ◦ An image of the initial thresholding use for analysis
+
 • Label map:    ◦ An image in which every nucleus is given a value that corresponds to the “label” in the results table.
+
 • Emission ratio map:    ◦ An image in which every nucleus is given the value of it’s emission ratio X 1000
+
 • Max Z projected emission ratio map:    ◦ A maximum Z projection of the emission ratio map
+
 • Nearest point emission ratio map:    ◦ A nearest point projection of the emission ratio map, with outlines added between the nuclei NB: the scale of this image is different to the original image and other images, allowing thin outlines to be drawn.
         
 
