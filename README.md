@@ -11,6 +11,8 @@ I run a connected components analysis to generate a label map of the watersheded
 
 To correct this, I run a connected components on the 'lost nuclei' map, to generate  labels, and add on the max value of the OTHER label map. Then I use maximumImage to superimpose these labels on the other label map to get my FINAL label map.
 
+The software will then use the segmentation to quantify statistics (postion, intesnity etc) for each nucleus for the chosen channel.
+
 
 
 
