@@ -4,7 +4,7 @@
 								Started: 2020-08-06		
 							 		@BotanicalJim
 							james.rowe at slcu.cam.ac.uk
-									Version 0.5
+									Version v1.0
 
 ******************************************************************************************
 """
@@ -70,7 +70,7 @@ def concatStacks(masterStack, impToAdd):
 	return masterStack
 
 def previewDialog(imp):
-	gd = GenericDialogPlus("FRETENATOR")
+	gd = GenericDialogPlus("Nuclear segmentation and quantification v1.0")
 
 	#create a list of the channels in the provided imagePlus
 	types = []
@@ -289,70 +289,27 @@ def segment(gfx1,gfx2,gfx3,gfx4,gfx5, gaussianSigma, thresholdMethod,maxIntensit
 	return gfx1,gfx2,gfx3,gfx4,gfx5
 
 
+	
+def quantify(quantgfx,labelgfx, results, table, nFrame, originalTitle):
+	clij2.statisticsOfBackgroundAndLabelledPixels(gfx4, gfx5, results)
 
-
-def nearestZProject(imp1):
-	relicedImp=Slicer().reslice(imp1)
-	relicedStack=relicedImp.getStack()
-	width=imp1.getWidth()
-	height=imp1.getHeight()
-	depth=imp1.getNSlices()
-	
-	topPixels=zeros('f', width * height)  
-	
-	stack2=ImageStack( width, height)
-	for i in range(1,relicedImp.getNSlices()):
-		pixels= relicedStack.getPixels(i)
-		for x in xrange(width):
-			for pixel in xrange(x, x+width*(depth-1),width):
-				#after finding the first pixel above the threshold value, add the value to the list
-				if pixels[pixel] != 0:
-				
-					topPixels[i*width+x]=pixels[pixel]
-					#break from looping the y when 1st threshold pixel is found is met -> increases speed drastically! Otherwise need an if statement every loop...
-					break
-	
-	ip2=FloatProcessor(width, height, topPixels, None)
-	imp2=ImagePlus("Nearest point proj",ip2)
-	imp3= imp2.resize(imp2.getWidth()*2, imp2.getHeight()*2, 'none')
-	return imp3
-
-
-
-def outline(imp3, originalTitle):
-	
-	
-	#clij implementation
-	"""
-	src=clij2.push(imp3)
-	dst=clij2.create(src)
-	dst2=clij2.create(src)
-	clij2.detectLabelEdges(src,dst)
-	clij2.binaryNot(dst,dst2)
-	clij2.multiplyImages(src, dst2, dst)
-	imp4=clij2.pull(dst)
-	imp4.show()
-	clij2.clear()
-	"""
-	
-	imp2=imp3.duplicate()
-	stack1=imp3.getStack()
-	width=imp3.getWidth()
-	height=imp3.getHeight()
-	stack2=ImageStack(width, height)
-	pixlist=[]
-	
-	for i in range(imp3.getNSlices()):
-		pixlist=[]
-		pixels1=stack1.getPixels(i+1)
-		#if pixel is different to the pixel to the left or above, set it to 0
-		pixels2=map(lambda j: pixels1[j] if pixels1[j]-pixels1[j-1]==0 and pixels1[j]-pixels1[j-width]==0 else 0, xrange(len(pixels1)))
-		processor=FloatProcessor(width, height, pixels2, None)
-		stack2.addSlice(processor)
-	imp2=ImagePlus("Nearest point emission ratios of "+ originalTitle, stack2)
-	imp2.show()
-	return imp2
-
+	for i in range(results.size()):
+		table.incrementCounter()
+		table.addValue("Frame (Time)", nFrame)
+		table.addValue("Label", i)
+		table.addValue("MEAN_INTENSITY",results.getValue("MEAN_INTENSITY",i))
+		table.addValue("SUM_INTENSITY",results.getValue("SUM_INTENSITY",i))
+		table.addValue("MINIMUM_INTENSITY",results.getValue("MINIMUM_INTENSITY",i))
+		table.addValue("MAXIMUM_INTENSITY",results.getValue("MAXIMUM_INTENSITY",i))
+		table.addValue("STANDARD_DEVIATION_INTENSITY",results.getValue("STANDARD_DEVIATION_INTENSITY",i))
+		table.addValue("PIXEL_COUNT",results.getValue("PIXEL_COUNT",i))
+		table.addValue("CENTROID_X",results.getValue("CENTROID_X",i))
+		table.addValue("CENTROID_Y",results.getValue("CENTROID_Y",i))
+		table.addValue("CENTROID_Z",results.getValue("CENTROID_Z",i))
+		
+		table.addValue("File name", originalTitle)
+		
+	return table
 
 # *****************************body of code starts****************************************
 
@@ -406,6 +363,7 @@ results=ResultsTable()
 for nFrame in xrange(1, totalFrames):
 	clij2.clear()
 	segmentImp=extractChannel(imp1, segmentChannel, nFrame)
+	quantImp=extractChannel(imp1, quantChannel, nFrame)
 	gfx1=clij2.push(segmentImp)
 	gfx2=clij2.create(gfx1)
 	gfx3=clij2.create(gfx1)
@@ -415,6 +373,7 @@ for nFrame in xrange(1, totalFrames):
 	
 	thresholdImp = clij2.pull(gfx3)
 	labelImp = clij2.pull(gfx5)
+	gfx4=clij2.push(quantImp)
 	IJ.setMinAndMax(thresholdImp, 0,1)
 	thresholdImp.setCalibration(cal)
 	thresholdImp.setTitle("Binary mask of "+originalTitle)
@@ -424,11 +383,12 @@ for nFrame in xrange(1, totalFrames):
 	#add the images to concatenated stacks
 	conThresholdStack = concatStacks(conThresholdStack, thresholdImp)
 	conlabelImpStack=concatStacks(conlabelImpStack, labelImp)
-	clij2.statisticsOfBackgroundAndLabelledPixels(gfx1, gfx5, results)
+	table=quantify(gfx4, gfx5, results, table, nFrame, originalTitle)
+	
 	thresholdImp.close()
 	labelImp.close()
-	print nFrame
-results.show("Results of "+originalTitle)
+	IJ.log( "Processing timeframe: " +str(nFrame))
+table.show("Results of "+originalTitle)
 #Show the images and make the images pretty... I should have put in a function`
 
 conThresholdImp= ImagePlus( "Threshold image for "+ originalTitle, conThresholdStack)
