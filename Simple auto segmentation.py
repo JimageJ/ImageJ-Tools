@@ -4,7 +4,7 @@
 								Started: 2020-08-06		
 							 		@BotanicalJim
 							james.rowe at slcu.cam.ac.uk
-									Version v1.0
+									Version v1.01
 
 ******************************************************************************************
 """
@@ -70,7 +70,7 @@ def concatStacks(masterStack, impToAdd):
 	return masterStack
 
 def previewDialog(imp):
-	gd = GenericDialogPlus("Nuclear segmentation and quantification v1.0")
+	gd = GenericDialogPlus("Nuclear segmentation and quantification v1.01")
 
 	#create a list of the channels in the provided imagePlus
 	types = []
@@ -290,7 +290,8 @@ def segment(gfx1,gfx2,gfx3,gfx4,gfx5, gaussianSigma, thresholdMethod,maxIntensit
 
 
 	
-def quantify(quantgfx,labelgfx, results, table, nFrame, originalTitle):
+def quantify(quantgfx,labelgfx, table, nFrame, originalTitle):
+	results=ResultsTable()
 	clij2.statisticsOfBackgroundAndLabelledPixels(gfx4, gfx5, results)
 
 	for i in range(results.size()):
@@ -358,7 +359,7 @@ originalTitle=imp1.getTitle()
 
 conThresholdStack=ImageStack(imp1.width, imp1.height)
 conlabelImpStack=ImageStack(imp1.width, imp1.height)
-results=ResultsTable()
+
 	
 for nFrame in xrange(1, totalFrames):
 	clij2.clear()
@@ -383,7 +384,7 @@ for nFrame in xrange(1, totalFrames):
 	#add the images to concatenated stacks
 	conThresholdStack = concatStacks(conThresholdStack, thresholdImp)
 	conlabelImpStack=concatStacks(conlabelImpStack, labelImp)
-	table=quantify(gfx4, gfx5, results, table, nFrame, originalTitle)
+	table=quantify(gfx4, gfx5, table, nFrame, originalTitle)
 	
 	thresholdImp.close()
 	labelImp.close()
