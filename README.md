@@ -4,7 +4,7 @@
 **Simple autosegmentation (Nuclear segmentation -beta)**
 
 
-**NB.** (Installation) This software has similar installation requirements as FRETENATOR_Segment_and_ratio, install CLIJ and CLIJ2 by activating their update sites (see the first youtube link below for a guide), then copy 'Simple auto segmentation.py' into the Fiji/plugins folder.
+**NB.** (Installation) This software has similar installation requirements as FRETENATOR_Segment_and_ratio, install CLIJ and CLIJ2 by activating their update sites (see the first youtube link below for a guide), then copy 'Simple auto segmentation.py' into the Fiji/plugins folder and restart Fiji.
 
 
 The segmentation tool works by a DoG filter, then Otsu to generate a binary map. I then use a watershed to split objects, but a 3D watershed it a little too severe and causes the loss of many nuclei and many shrink down much smaller than their original size. 
