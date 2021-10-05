@@ -2,6 +2,8 @@
 
 
 **Simple autosegmentation (Nuclear segmentation -beta)**
+
+
 **NB.** (Installation) This software has the same installation requirements as FRETENATOR_Segment_and_ratio (CLIJ and CLIJ2), to install these, please see the first youtube link below.
 
 
