@@ -61,3 +61,11 @@ Installation and usage:
 
 https://www.youtube.com/watch?v=1rTyM1VBkFc
 
+**Troubleshooting**
+
+All these plugins use CLIJ/CLIJ2 to process images on the graphics card. This means image processing is lightning fast, but also means there are sometimes errors/crashes.
+
+The majority of these crashes are due to one of two reasons:
+**i.** the image stack being too large to process on the graphics card this can be solved by using a computer with more video memory, or scaling/cropping the images to be smaller. Normally 4-5x the image size is required in video memory. Running Plugins>ImageJ on GPU (CLIJ2)>Macro tools>CLIJ2 Clinfo will allow you to select GPU and provide info on the hardware’s maximum image size.
+
+or **ii.** out of date graphics card drivers. This often presents with black/blank images. This can often be solved by downloading the latest drivers from the manufacturer website (usually AMD, Nvidia or intel). 
