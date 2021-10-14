@@ -4,6 +4,11 @@
 **Simple autosegmentation (Nuclear segmentation -beta)**
 
 
+![Raw fluorescence channel](https://github.com/JimageJ/ImageJ-Tools/blob/master/fluorescence.gif)
+![Segmented label map](https://github.com/JimageJ/ImageJ-Tools/blob/master/labelmap.gif)
+
+
+
 **Installation** This software has similar installation requirements as FRETENATOR_Segment_and_ratio, install CLIJ and CLIJ2 by activating their update sites (see the first youtube link below for a guide), then copy 'Simple_auto_segmentation.py' into the Fiji/plugins folder and restart Fiji.
 
 
