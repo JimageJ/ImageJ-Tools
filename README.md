@@ -9,7 +9,7 @@
 
 
 
-**Installation** This software has similar installation requirements as FRETENATOR_Segment_and_ratio, install CLIJ and CLIJ2 by activating their update sites (see the first youtube link below for a guide), then copy 'Simple_auto_segmentation.py' into the Fiji/plugins folder and restart Fiji.
+**Installation** This software has similar installation requirements as FRETENATOR_Segment_and_ratio, install CLIJ and CLIJ2 by activating their update sites (see the first youtube link below for a guide), then copy **'Simple_auto_segmentation.py'** into the Fiji/plugins folder and restart Fiji.
 
 
 The segmentation tool works by a DoG filter, then Otsu to generate a binary map. I then use a watershed to split objects, but a 3D watershed it a little too severe and causes the loss of many nuclei and many shrink down much smaller than their original size. 
@@ -27,7 +27,7 @@ The software will then use the segmentation to quantify statistics (postion, int
 
 **FRETENATOR_Segment_and_ratio (Beta)**
 
-**Installation** Install CLIJ and CLIJ2 by activating their update sites (see the first youtube link below for a guide), then copy 'FRETENATOR_Segment_and_ratio.py' into the Fiji/plugins folder and restart Fiji.
+**Installation** Install CLIJ and CLIJ2 by activating their update sites (see the first youtube link below for a guide), then copy the plugin file into the Fiji/plugins folder and restart Fiji. The plugin file is **'FRETENATOR_Segment_and_ratio.py'** for the version published in Rowe et al (2021) and **'FRETENATOR_Segment_and_ratio__V10_ROI_size.py'**  for the latest version.
 
 Built upon the nuclear segmentation tool, except with the option of a TopHat background removal filter is included. Gives a dialog with segmentation settings, which can be adjusted in real time with a live labelmap max projection preview of frame 1. Pleasse note that the DoG filter and tophat background subtraction are only used to segment the image and are not applied to the channels to be quantified.
 
@@ -62,7 +62,7 @@ FRETENATOR_Segment_and_ratio produces a Results Table and the following images:
 
 **FRETENATOR_Labeller (Alpha)**
 
-**Installation** Install CLIJ and CLIJ2 by activating their update sites (see the first youtube link below for a guide), then copy 'FRETENATOR_ROI_Labeller.py' into the Fiji/plugins folder and restart Fiji.
+**Installation** Install CLIJ and CLIJ2 by activating their update sites (see the first youtube link below for a guide), then copy **'FRETENATOR_ROI_Labeller.py'** into the Fiji/plugins folder and restart Fiji.
 
 A follow on tool for after segmentations where users can categorise the ROI in their segmented images. As a work in progress, it currently works on single timepoint 3D label images, allowing users to visually assign labels to one of 10 categories. Results are either output to an existing results table or can be used to measure a chosen image. It will work with labelmaps up to 4095 labels currently.
 
