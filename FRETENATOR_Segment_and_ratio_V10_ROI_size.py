@@ -611,7 +611,7 @@ stats=StackStatistics(conFRETImp2)
 conFRETImp2 = CompositeImage(conFRETImp2, CompositeImage.COMPOSITE)  
 IJ.setMinAndMax(conFRETImp2, 0, 4000)
 conFRETImp2.show()
-IJ.run("000_Turbo")
+IJ.run("16_colors")
 
 
 conFRETProjImp= ImagePlus( "Max Z  projection of emission ratios X1000 of "+ originalTitle, conFRETProjImpStack)
@@ -621,8 +621,8 @@ stats=StackStatistics(conFRETProjImp)
 IJ.setMinAndMax(conFRETProjImp, 0, 4000)
 conFRETProjImp = CompositeImage(conFRETProjImp, CompositeImage.COMPOSITE)  
 conFRETProjImp.show()
-IJ.run("000_Turbo")
-	
+IJ.run("16_colors")
+
 conlabelImp= ImagePlus("Label map "+ originalTitle, conlabelImpStack)
 conlabelImp.setDimensions(1, imp1.getNSlices(), imp1.getNFrames())
 conlabelImp.setCalibration(cal)
@@ -637,4 +637,4 @@ if makeNearProj == True:
 	nearZImpOutlines = outline(conNearZImp,originalTitle)
 	IJ.setMinAndMax(nearZImpOutlines, 0, 4000)
 	nearZImpOutlines.show()
-	IJ.run("000_Turbo")
+	IJ.run("16_colors")
