@@ -4,10 +4,9 @@
 								Started: 2020-08-06		
 							 		@BotanicalJim
 							james.rowe at slcu.cam.ac.uk
-									Version 9.1e
+									Version 10.0
 
-							Dilation added for Sarah
-							ROI size excluion added for Colleen and Jayne
+
 
 ******************************************************************************************
 """
