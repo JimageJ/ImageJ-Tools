@@ -78,7 +78,9 @@ def previewDialog(imp):
 	types = []
 	for i in xrange(1, imp.getNChannels()+1):
 		types.append(str(i))
-
+	gd.addMessage("""Rowe, J. H, Rizza, A., Jones A. M. (2021) Quantifying phytohormones
+	in vivo with FRET biosensors and the FRETENATOR analysis toolset
+	Methods in Molecular Biology""")
 	#user can pick which channel to base the segmentation on
 	gd.addChoice("Channel number to use for segmentation", types, types[2])
 	gd.addChoice("Channel number to use for donor", types, types[0])
@@ -542,7 +544,18 @@ imp1= IJ.getImage()
 
 
 options= previewDialog(imp1)
-print(options)
+
+#get the pixel aspect for use in zscaling kernels for filters
+cal = imp1.getCalibration()
+pixelAspect=(cal.pixelDepth/cal.pixelWidth)
+originalTitle=imp1.getTitle()
+
+
+
+IJ.log(originalTitle +" settings:")
+IJ.log("segmentChannel, donorChannel, acceptorChannel, acceptorChannel2, thresholdMethod, maxIntensity, gaussianSigma, largeDoGSigma, topHat, topHatSigma, manualSegment, manualThreshold, makeNearProj, dilation, sizeExclude, minSize, maxSize:")
+IJ.log(str(options))
+
 segmentChannel, donorChannel, acceptorChannel, acceptorChannel2, thresholdMethod, maxIntensity, gaussianSigma, largeDoGSigma, topHat, topHatSigma, manualSegment, manualThreshold, makeNearProj, dilation, sizeExclude, minSize, maxSize=options
 totalFrames=imp1.getNFrames() +1
 
@@ -552,10 +565,7 @@ table = ResultsTable()
 clij2 = CLIJ2.getInstance()
 clij2.clear()
 
-#get the pixel aspect for use in zscaling kernels for filters
-cal = imp1.getCalibration()
-pixelAspect=(cal.pixelDepth/cal.pixelWidth)
-originalTitle=imp1.getTitle()
+
 
 conThresholdStack=ImageStack(imp1.width, imp1.height)
 conFRETImp2Stack=ImageStack(imp1.width, imp1.height)
