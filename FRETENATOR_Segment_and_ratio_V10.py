@@ -4,7 +4,7 @@
 								Started: 2020-08-06		
 							 		@BotanicalJim
 							james.rowe at slcu.cam.ac.uk
-									Version 10.0
+									Version 1.10.1
 
 
 
@@ -83,8 +83,8 @@ def previewDialog(imp):
 	Methods in Molecular Biology""")
 	#user can pick which channel to base the segmentation on
 	try:
-		gd.addChoice("Channel number to use for acceptor", types, types[2])
-	except: gd.addChoice("Channel number to use for acceptor", types, types[1])
+		gd.addChoice("Channel number to use for segmentation", types, types[2])
+	except: gd.addChoice("Channel number to use for segmentation", types, types[1])
 	gd.addChoice("Channel number to use for donor", types, types[0])
 	gd.addChoice("Channel number to use for acceptor (FRET)", types, types[1])
 	try:
@@ -554,7 +554,7 @@ options= previewDialog(imp1)
 cal = imp1.getCalibration()
 pixelAspect=(cal.pixelDepth/cal.pixelWidth)
 originalTitle=imp1.getTitle()
-
+#print dir(cal)
 
 
 IJ.log(originalTitle +" settings:")
@@ -647,9 +647,19 @@ IJ.setMinAndMax(conlabelImp, 0,stats.max)
 conlabelImp.show()
 IJ.run("glasbey_inverted")
 
+
 if makeNearProj == True:
 	conNearZImp=ImagePlus("Nearest Z proj of  ratios of"+ originalTitle, conNearZStack)
 	nearZImpOutlines = outline(conNearZImp,originalTitle)
+	cal2=cal.copy()
+	cal2.pixelWidth = (cal.pixelWidth/2)
+	cal2.pixelHeight =(cal.pixelHeight/2)
+	cal2.pixelDepth =( imp1.getNSlices() * cal.pixelDepth)
+	nearZImpOutlines.setCalibration(cal2)
 	IJ.setMinAndMax(nearZImpOutlines, 0, 4000)
 	nearZImpOutlines.show()
 	IJ.run("16_colors")
+	
+	#print cal.getXUnit()
+
+
