@@ -62,7 +62,7 @@ FRETENATOR_Segment_and_ratio produces a Results Table and the following images:
 
 **FRETENATOR_Labeller (Alpha)**
 
-**Installation** Install CLIJ and CLIJ2 by activating their update sites (see the first youtube link below for a guide), then copy the plugin  into the Fiji/plugins folder and restart Fiji. The plugin file is **'FRETENATOR_ROI_Labeller.py'** for the version published in Rowe et al (2021) and **'FRETENATOR_ROI_Labeller_v1.1.py'** for the latest version.
+**Installation** Install CLIJ and CLIJ2 by activating their update sites (see the first youtube link below for a guide), then copy the plugin  into the Fiji/plugins folder and restart Fiji. The plugin file is **'FRETENATOR_ROI_Labeller.py'** for the version published in Rowe et al (2021) and **'FRETENATOR_ROI_Labeller_v1.2.py'** for the latest version.
 
 A follow on tool for after segmentations where users can categorise the ROI in their segmented images. As a work in progress, it currently works on single timepoint 3D label images, allowing users to visually assign labels to one of 10 categories. Results are either output to an existing results table or can be used to measure a chosen image. It will work with labelmaps up to 4095 labels currently.
 
@@ -70,6 +70,11 @@ A follow on tool for after segmentations where users can categorise the ROI in t
 **
 
 https://www.youtube.com/watch?v=1rTyM1VBkFc
+
+**FRETENATOR_Trackmate_Bridge**
+A simple plugin to allow **Trackmate 7** analysed label images (Analyse the FRETENATOR label map for tracking then export the tracked label map as dots) to be combined with **FRETENATOR_Segment_and_ratio** output. This adds TrackIDs to the results table and creats a new TrackID labelmap that can be analysed with the ROI manager.
+
+
 
 **Troubleshooting**
 
