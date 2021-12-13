@@ -4,8 +4,8 @@
 ## **Simple autosegmentation (Nuclear segmentation -beta)**
 
 
-![Raw fluorescence channel](https://github.com/JimageJ/ImageJ-Tools/blob/master/fluorescence.gif)
-![Segmented label map](https://github.com/JimageJ/ImageJ-Tools/blob/master/labelmap.gif)
+![Raw fluorescence channel](https://github.com/JimageJ/ImageJ-Tools/blob/master/images/fluorescence.gif)
+![Segmented label map](https://github.com/JimageJ/ImageJ-Tools/blob/master/images/labelmap.gif)
 
 
 
@@ -46,7 +46,7 @@ The chosen settings will then be applied to the time series and the data for emi
 
 In the latest update, the option of a "nearest point Z projection" is included, which has outline drawing between segmented objects. This will make pretty Z projections where the different objects are discernable and overlayed properly.
 
-![nlsABACUS1-2u ABA treatment quantified and rendered with FRETENATOR](https://github.com/JimageJ/ImageJTools/blob/master/Nearest%20point%20emission%20ratios%20of%201-2%20concatenated%20drift%20corrected.gif)
+![nlsABACUS1-2u ABA treatment quantified and rendered with FRETENATOR](https://github.com/JimageJ/ImageJTools/blob/master/images/Nearest%20point%20emission%20ratios%20of%201-2%20concatenated%20drift%20corrected.gif)
 
 
 **Usage**:
