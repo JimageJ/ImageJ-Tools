@@ -11,7 +11,7 @@
 
 ### **Installation**
 
-This software has similar installation requirements as FRETENATOR_Segment_and_ratio, install CLIJ and CLIJ2 by activating their update sites (see the first youtube link below for a guide), then copy **'Simple_auto_segmentation.py'** into the Fiji/plugins folder and restart Fiji.
+Install CLIJ and CLIJ2 by activating their update sites, then copy the **'FRETENATOR_(Rowe et al 2022)'** folder into the Fiji/plugins folder and restart Fiji.
 
 ### Implementation
 
@@ -32,11 +32,7 @@ The software will then use the segmentation to quantify statistics (postion, int
 
 ### **Installation**
 
-Install CLIJ and CLIJ2 by activating their update sites (see the first youtube link below for a guide), then copy the plugin file into the Fiji/plugins folder and restart Fiji. The plugin file is **'FRETENATOR_Segment_and_ratio.py'** for the version published in Rowe et al (2021) and **'FRETENATOR_Segment_and_ratio__V10_ROI_size.py'**  for the latest version.
-
-**Installation**:
-
-https://www.youtube.com/watch?v=_mALvThK24Y
+Install CLIJ and CLIJ2 by activating their update sites, then copy the appropriate folder into the Fiji/plugins folder and restart Fiji. The folders are **'FRETENATOR_(Rowe et al 2022)'** for the version published in the methods chapter Rowe et al (2022) and **'FRETENATOR_with_tracking'**  for the latest version.
 
 ### Implementation and usage
 
@@ -67,21 +63,21 @@ FRETENATOR_Segment_and_ratio produces a Results Table and the following images:
 • Nearest point emission ratio map:    ◦ A nearest point projection of the emission ratio map, with outlines added between the nuclei NB: the scale of this image is different to the original image and other images, allowing thin outlines to be drawn.
         
 
-## **FRETENATOR_Labeller (Alpha)**
+## **FRETENATOR_Labeller (Beta with some alpha functionality)**
 
 ### **Installation**
-Install CLIJ and CLIJ2 by activating their update sites (see the first youtube link below for a guide), then copy the plugin  into the Fiji/plugins folder and restart Fiji. The plugin file is **'FRETENATOR_ROI_Labeller.py'** for the version published in Rowe et al (2021) and **'FRETENATOR_ROI_Labeller_v1.2.py'** for the latest version.
+Install CLIJ and CLIJ2 by activating their update sites, then copy the appropriate folder into the Fiji/plugins folder and restart Fiji. The folders are **'FRETENATOR_(Rowe et al 2022)'** for the version published in the methods chapter Rowe et al (2022) and **'FRETENATOR_with_tracking'**  for the latest version.
 
 ### Implementation and usage
 
-A follow on tool for after segmentations where users can categorise the ROI in their segmented images. As a work in progress, it currently works on single timepoint 3D label images, allowing users to visually assign labels to one of 10 categories. Results are either output to an existing results table or can be used to measure a chosen image. ***Buggy:*** Time course usage asumes the same label usage through time (making it compatable with Trackmate exported files (see below).
+A follow on tool for after segmentations where users can categorise the ROI in their segmented images. As a work in progress, it currently works on single timepoint 3D label images, allowing users to visually assign labels to one of 10 categories. Results are either output to an existing results table or can be used to measure a chosen image. ***Alpha functionality:*** Time course usage asumes the same label usage through time (making it compatable with Trackmate exported files (see below).
 
 **Installation and usage:
 **
 
 https://www.youtube.com/watch?v=1rTyM1VBkFc
 
-## **FRETENATOR_Trackmate_Bridge (preAlpha)**
+## **FRETENATOR_Trackmate_Bridge (Alpha)**
 
 A simple plugin to allow **Trackmate 7** analysed label images (Analyse the FRETENATOR label map for tracking then export the tracked label map as dots) to be combined with **FRETENATOR_Segment_and_ratio** output. This adds TrackIDs to the results table and creats a new TrackID labelmap that can be analysed with the ROI manager.
 
