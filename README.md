@@ -70,7 +70,7 @@ Install CLIJ and CLIJ2 by activating their update sites, then copy the appropria
 
 ### Implementation and usage
 
-A follow on tool for after segmentations where users can categorise the ROI in their segmented images. As a work in progress, it currently works on single timepoint 3D label images, allowing users to visually assign labels to one of 10 categories. Results are either output to an existing results table or can be used to measure a chosen image. ***Alpha functionality:*** Time course usage asumes the same label usage through time (making it compatable with Trackmate exported files (see below).
+A follow on tool for after segmentations where users can categorise the ROI in their segmented images. As a work in progress, it currently works on single timepoint 3D label images, allowing users to visually assign labels to one of 10 categories. Results are either output to an existing results table or can be used to measure a chosen image. ***Alpha functionality:*** In the latest version, time course analysis can be performed, but usage asumes the same label usage through time (making it compatable with Trackmate exported files - see below).
 
 **Installation and usage:
 **
