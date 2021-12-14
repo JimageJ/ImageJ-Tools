@@ -77,6 +77,9 @@ A follow on tool for after segmentations where users can categorise the ROI in t
 
 https://www.youtube.com/watch?v=1rTyM1VBkFc
 
+
+![Stomata ROI labeled image after tracking with Trackmate](https://github.com/JimageJ/ImageJ-Tools/blob/master/images/labeled%20stomata.gif)
+
 ## **FRETENATOR_Trackmate_Bridge (Alpha)**
 
 A simple plugin to allow **Trackmate 7** analysed label images (Analyse the FRETENATOR label map for tracking then export the tracked label map as dots) to be combined with **FRETENATOR_Segment_and_ratio** output. This adds TrackIDs to the results table and creats a new TrackID labelmap that can be analysed with the ROI manager.
