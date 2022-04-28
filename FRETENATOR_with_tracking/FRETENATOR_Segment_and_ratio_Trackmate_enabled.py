@@ -4,7 +4,7 @@
 								Started: 2020-08-06		
 							 		@BotanicalJim
 							james.rowe at slcu.cam.ac.uk
-									Version 10.0
+									Version 11
 
 
 
@@ -90,19 +90,20 @@ def previewDialog(imp):
 	gd.addChoice("Autosegmentation method", methods, methods[0])
 	intensities=["254", "4094", "65534"]
 	gd.addChoice("Max Intensity", intensities, intensities[-1])
-	gd.addSlider("Small DoG sigma", 0.5, 10, 1.2, 0.1)
-	gd.addSlider("Large DoG sigma", 0.5, 20, 5 ,0.1)
+	gd.addSlider("Small DoG sigma", 0.5, 10, 0.8, 0.1)
+	gd.addSlider("Large DoG sigma", 0.5, 20, 4 ,0.1)
 	gd.addCheckbox("TopHat background subtraction? (Slower, but better) ", False)
 	gd.addSlider("TopHat sigma", 5, 20, 8 ,0.1)
 	gd.setModal(False)
-	gd.addCheckbox("Manually set threshold? ", False)
-	gd.addSlider("Manual threshold", 10, 65534, 1000, 1)
+	gd.addCheckbox("Manually set threshold? ", True)
+	gd.addSlider("Manual threshold", 10, 65534, 600, 1)
 	dilationOptions=["0", "1", "2","3", "4", "5", "6"]
 	gd.addChoice("Dilation?", dilationOptions, "0")
-	gd.addCheckbox("Size exclusion of ROI? ", False)
-	gd.addSlider("Minimum ROI size", 0, 9999, 0, 1)
+	gd.addCheckbox("Size exclusion of ROI? ", True)
+	gd.addSlider("Minimum ROI size", 0, 9999, 20, 1)
 	gd.addSlider("Maximum ROI size", 1, 10000, 10000, 1)
 	gd.addCheckbox("Create nearest point projection with outlines (SLOW)? ", True)
+	gd.addCheckbox("Watershed object splitting? ", True)
 	gd.showDialog()
 
 		
@@ -131,6 +132,7 @@ def previewDialog(imp):
 	sizeExclude=gd.checkboxes.get(2).getState()
 	minSize = gd.sliders.get(4).getValue()
 	maxSize = gd.sliders.get(5).getValue()
+	watershed = gd.checkboxes.get(4).getState()
 	#print dir(gd.sliders.get(5))
 	#print maxSize
 	
@@ -147,6 +149,7 @@ def previewDialog(imp):
 	sizeExcludeOld=sizeExclude
 	minSizeOld=minSize
 	maxSizeOld=maxSize
+	watershedOld=watershed
 	clij2.clear()
 	
 	segmentImp=extractChannel(imp1, segmentChannel, 0)
@@ -183,7 +186,7 @@ def previewDialog(imp):
 			"""	+ str(clij2.reportMemory()) )
 
 
-	gfx1,gfx2,gfx3,gfx4,gfx5 = segment(gfx1,gfx2,gfx3,gfx4,gfx5, gaussianSigma, thresholdMethod,maxIntensity, largeDoGSigma, pixelAspect, originalTitle, topHat, topHatSigma , manualSegment, manualThreshold, dilation,sizeExclude, minSize, maxSize)
+	gfx1,gfx2,gfx3,gfx4,gfx5 = segment(gfx1,gfx2,gfx3,gfx4,gfx5, gaussianSigma, thresholdMethod,maxIntensity, largeDoGSigma, pixelAspect, originalTitle, topHat, topHatSigma , manualSegment, manualThreshold, dilation,sizeExclude, minSize, maxSize, watershed)
 	clij2.maximumZProjection(gfx5, gfx7)
 
 	labelPrevImp= clij2.pull(gfx7)
@@ -215,7 +218,7 @@ def previewDialog(imp):
 		sizeExclude=gd.checkboxes.get(2).getState()
 		minSize = gd.sliders.get(4).getValue()
 		maxSize = gd.sliders.get(5).getValue()
-		
+		watershed = gd.checkboxes.get(4).getState()
 			
 	
 		if (segmentChannelOld !=segmentChannel or
@@ -230,7 +233,8 @@ def previewDialog(imp):
 		dilation != dilationOld or
 		sizeExcludeOld!=sizeExclude or
 		minSizeOld!=minSize or
-		maxSizeOld!=maxSize
+		maxSizeOld!=maxSize or
+		watershedOld!=watershed
 		):
 			if minSizeOld!=minSize:
 				if minSize>=maxSize:
@@ -249,7 +253,7 @@ def previewDialog(imp):
 					gfx4=clij2.create(gfx1)
 					gfx5=clij2.create(gfx1)
 					gfx7=clij2.create([imp.getWidth(), imp.getHeight()])
-			gfx1,gfx2,gfx3,gfx4,gfx5 = segment(gfx1,gfx2,gfx3,gfx4,gfx5, gaussianSigma, thresholdMethod,maxIntensity, largeDoGSigma, pixelAspect, originalTitle, topHat,topHatSigma, manualSegment, manualThreshold, dilation,sizeExclude, minSize, maxSize)
+			gfx1,gfx2,gfx3,gfx4,gfx5 = segment(gfx1,gfx2,gfx3,gfx4,gfx5, gaussianSigma, thresholdMethod,maxIntensity, largeDoGSigma, pixelAspect, originalTitle, topHat,topHatSigma, manualSegment, manualThreshold, dilation,sizeExclude, minSize, maxSize, watershed)
 			clij2.maximumZProjection(gfx5, gfx7)
 			labelPrevImp.close()
 			labelPrevImp= clij2.pull(gfx7)
@@ -272,13 +276,14 @@ def previewDialog(imp):
 		sizeExcludeOld=sizeExclude
 		minSizeOld=minSize
 		maxSizeOld=maxSize
+		watershedOld=watershed
 		Thread.sleep(200)
 	labelPrevImp.close()
 	makeNearProj = gd.checkboxes.get(3).getState()
-	return segmentChannel, donorChannel, acceptorChannel, acceptorChannel2, thresholdMethod, maxIntensity, gaussianSigma, largeDoGSigma, topHat, topHatSigma, manualSegment, manualThreshold, makeNearProj, dilation, sizeExclude, minSize, maxSize
+	return segmentChannel, donorChannel, acceptorChannel, acceptorChannel2, thresholdMethod, maxIntensity, gaussianSigma, largeDoGSigma, topHat, topHatSigma, manualSegment, manualThreshold, makeNearProj, dilation, sizeExclude, minSize, maxSize, watershed
 	
 	
-def segment(gfx1,gfx2,gfx3,gfx4,gfx5, gaussianSigma, thresholdMethod,maxIntensity, largeDoGSigma, pixelAspect, originalTitle, topHat, topHatSigma, manualSegment, manualThreshold, dilation, sizeExclude, minSize, maxSize):
+def segment(gfx1,gfx2,gfx3,gfx4,gfx5, gaussianSigma, thresholdMethod,maxIntensity, largeDoGSigma, pixelAspect, originalTitle, topHat, topHatSigma, manualSegment, manualThreshold, dilation, sizeExclude, minSize, maxSize, watershed):
 	
 
 
@@ -297,9 +302,10 @@ def segment(gfx1,gfx2,gfx3,gfx4,gfx5, gaussianSigma, thresholdMethod,maxIntensit
 		#auto threshold and watershed to seed the object splitting
 		clij2.automaticThreshold(gfx2, gfx3, thresholdMethod)
 	
-
-	clij2.watershed(gfx3,gfx2)
-	
+	if watershed:
+		clij2.watershed(gfx3,gfx2)
+	else:
+		clij2.copy(gfx3,gfx2)
 
 	
 	# add watershed to original threshold, and then use this to generate a binary image of any ROI lost in watershed process
@@ -553,10 +559,10 @@ originalTitle=imp1.getTitle()
 
 
 IJ.log(originalTitle +" settings:")
-IJ.log("segmentChannel, donorChannel, acceptorChannel, acceptorChannel2, thresholdMethod, maxIntensity, gaussianSigma, largeDoGSigma, topHat, topHatSigma, manualSegment, manualThreshold, makeNearProj, dilation, sizeExclude, minSize, maxSize:")
+IJ.log("segmentChannel, donorChannel, acceptorChannel, acceptorChannel2, thresholdMethod, maxIntensity, gaussianSigma, largeDoGSigma, topHat, topHatSigma, manualSegment, manualThreshold, makeNearProj, dilation, sizeExclude, minSize, maxSize, watershed:")
 IJ.log(str(options))
 
-segmentChannel, donorChannel, acceptorChannel, acceptorChannel2, thresholdMethod, maxIntensity, gaussianSigma, largeDoGSigma, topHat, topHatSigma, manualSegment, manualThreshold, makeNearProj, dilation, sizeExclude, minSize, maxSize=options
+segmentChannel, donorChannel, acceptorChannel, acceptorChannel2, thresholdMethod, maxIntensity, gaussianSigma, largeDoGSigma, topHat, topHatSigma, manualSegment, manualThreshold, makeNearProj, dilation, sizeExclude, minSize, maxSize, watershed=options
 totalFrames=imp1.getNFrames() +1
 
 #table is the final results table
@@ -580,7 +586,7 @@ for nFrame in xrange(1, totalFrames):
 	gfx3=clij2.create(gfx1)
 	gfx4=clij2.create(gfx1)
 	gfx5=clij2.create(gfx1)
-	gfx1,gfx2,gfx3,gfx4,gfx5 = segment(gfx1,gfx2,gfx3,gfx4,gfx5, gaussianSigma, thresholdMethod,maxIntensity, largeDoGSigma, pixelAspect, originalTitle, topHat,topHatSigma, manualSegment, manualThreshold, dilation,sizeExclude, minSize, maxSize)
+	gfx1,gfx2,gfx3,gfx4,gfx5 = segment(gfx1,gfx2,gfx3,gfx4,gfx5, gaussianSigma, thresholdMethod,maxIntensity, largeDoGSigma, pixelAspect, originalTitle, topHat,topHatSigma, manualSegment, manualThreshold, dilation,sizeExclude, minSize, maxSize, watershed)
 	
 	thresholdImp = clij2.pull(gfx3)
 	IJ.setMinAndMax(thresholdImp, 0,1)
@@ -619,7 +625,7 @@ conFRETImp2.setDimensions(1, imp1.getNSlices(), imp1.getNFrames())
 conFRETImp2.setCalibration(cal)
 stats=StackStatistics(conFRETImp2)
 conFRETImp2 = CompositeImage(conFRETImp2, CompositeImage.COMPOSITE)  
-IJ.setMinAndMax(conFRETImp2, 0, 4000)
+IJ.setMinAndMax(conFRETImp2, 500, 3500)
 conFRETImp2.show()
 IJ.run("16_colors")
 
@@ -628,7 +634,7 @@ conFRETProjImp= ImagePlus( "Max Z  projection of emission ratios X1000 of "+ ori
 conFRETProjImp.setDimensions(1, 1, imp1.getNFrames())
 conFRETProjImp.setCalibration(cal)
 stats=StackStatistics(conFRETProjImp)
-IJ.setMinAndMax(conFRETProjImp, 0, 4000)
+IJ.setMinAndMax(conFRETProjImp, 500, 3500)
 conFRETProjImp = CompositeImage(conFRETProjImp, CompositeImage.COMPOSITE)  
 conFRETProjImp.show()
 IJ.run("16_colors")
@@ -645,6 +651,6 @@ IJ.run("glasbey_inverted")
 if makeNearProj == True:
 	conNearZImp=ImagePlus("Nearest Z proj of  ratios of"+ originalTitle, conNearZStack)
 	nearZImpOutlines = outline(conNearZImp,originalTitle)
-	IJ.setMinAndMax(nearZImpOutlines, 0, 4000)
+	IJ.setMinAndMax(nearZImpOutlines, 500, 3500)
 	nearZImpOutlines.show()
 	IJ.run("16_colors")
