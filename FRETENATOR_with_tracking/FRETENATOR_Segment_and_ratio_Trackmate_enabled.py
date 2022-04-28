@@ -103,7 +103,7 @@ def previewDialog(imp):
 	gd.addCheckbox("TopHat background subtraction? (Slower, but better) ", False)
 	gd.addSlider("TopHat sigma", 5, 20, 8 ,0.1)
 	gd.setModal(False)
-	gd.addCheckbox("Manually set threshold? ", True)
+	gd.addCheckbox("Manually set threshold? ", False)
 	gd.addSlider("Manual threshold", 10, 65534, 600, 1)
 	dilationOptions=["0", "1", "2","3", "4", "5", "6"]
 	gd.addChoice("Dilation?", dilationOptions, "0")
