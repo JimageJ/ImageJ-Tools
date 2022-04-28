@@ -78,10 +78,17 @@ def previewDialog(imp):
 		types.append(str(i))
 
 	#user can pick which channel to base the segmentation on
-	gd.addChoice("Channel number to use for segmentation", types, types[2])
-	gd.addChoice("Channel number to use for donor", types, types[0])
-	gd.addChoice("Channel number to use for acceptor (FRET)", types, types[1])
-	gd.addChoice("Channel number to use for acceptor", types, types[2])
+	if len(types)>2:
+		gd.addChoice("Channel number to use for segmentation", types, types[2])
+		gd.addChoice("Channel number to use for donor", types, types[0])
+		gd.addChoice("Channel number to use for acceptor (FRET)", types, types[1])
+		gd.addChoice("Channel number to use for acceptor", types, types[2])
+		#print('YAY')
+	else:
+		gd.addChoice("Channel number to use for segmentation", types, types[-1])
+		gd.addChoice("Channel number to use for donor", types, types[0])
+		gd.addChoice("Channel number to use for acceptor (FRET)", types, types[-2])
+		gd.addChoice("Channel number to use for acceptor", types, types[-1])
 	methods=["Otsu","Default", "Huang", "Intermodes", "IsoData", "IJ_IsoData", "Li", "MaxEntropy", "Mean", "MinError", "Minimum", "Moments", "Percentile", "RenyiEntropy", "Shanbhag", "Triangle", "Yen"]
 	gd.addChoice("Autosegmentation method", methods, methods[0])
 	intensities=["254", "4094", "65534"]
