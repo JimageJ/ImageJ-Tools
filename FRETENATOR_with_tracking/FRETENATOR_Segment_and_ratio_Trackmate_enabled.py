@@ -78,9 +78,13 @@ def previewDialog(imp):
 	types = []
 	for i in xrange(1, imp.getNChannels()+1):
 		types.append(str(i))
-	gd.addMessage("""Rowe, J. H, Rizza, A., Jones A. M. (2021) Quantifying phytohormones
+	gd.addMessage("""Rowe, J. H, Rizza, A., Jones A. M. (2022) Quantifying phytohormones
 	in vivo with FRET biosensors and the FRETENATOR analysis toolset
-	Methods in Molecular Biology""")
+	Methods in Molecular Biology
+	Rowe, JH., Grangé-Guermente, M., Exposito-Rodriguez, M.,Wimalasekera, R., Lenz, M.,
+	Shetty, K., Cutler, S., Jones, AM., Next-generation ABACUS biosensors reveal cellular
+	ABA dynamics driving root growth at low aerial humidity
+	""")
 	#user can pick which channel to base the segmentation on
 	if len(types)>2:
 		gd.addChoice("Channel number to use for segmentation", types, types[2])
