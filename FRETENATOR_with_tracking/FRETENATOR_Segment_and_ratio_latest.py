@@ -111,7 +111,7 @@ def previewDialog(imp):
 	gd.addSlider("Manual threshold", 10, 65534, 2000, 1)
 	dilationOptions=["0", "1", "2","3", "4", "5", "6"]
 	gd.addChoice("Dilation?", dilationOptions, "0")
-	gd.addCheckbox("Size exclusion of ROI? ", Off)
+	gd.addCheckbox("Size exclusion of ROI? ", False)
 	gd.addSlider("Minimum ROI size", 0, 9999, 20, 1)
 	gd.addSlider("Maximum ROI size", 1, 10000, 10000, 1)
 	gd.addCheckbox("Create nearest point projection with outlines (SLOW)? ", True)
