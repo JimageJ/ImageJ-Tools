@@ -95,7 +95,7 @@ def previewDialog(imp):
 	else:
 		gd.addChoice("Channel number to use for segmentation", types, types[-1])
 		gd.addChoice("Channel number to use for donor", types, types[0])
-		gd.addChoice("Channel number to use for acceptor (FRET)", types, types[-2])
+		gd.addChoice("Channel number to use for acceptor (FRET)", types, types[-1])
 		gd.addChoice("Channel number to use for acceptor", types, types[-1])
 	
 	methods=["Otsu","Default", "Huang", "Intermodes", "IsoData", "IJ_IsoData", "Li", "MaxEntropy", "Mean", "MinError", "Minimum", "Moments", "Percentile", "RenyiEntropy", "Shanbhag", "Triangle", "Yen"]
