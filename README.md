@@ -7,7 +7,7 @@
 
 
 
-## **Simple autosegmentation (Nuclear segmentation -beta)**
+## **Simple autosegmentation**
 
 
 ![Raw fluorescence channel](https://github.com/JimageJ/ImageJ-Tools/blob/master/images/fluorescence.gif)
@@ -34,7 +34,7 @@ The software will then use the segmentation to quantify statistics (postion, int
 
 
 
-## **FRETENATOR_Segment_and_ratio (Beta)**
+## **FRETENATOR_Segment_and_ratio**
 
 ### **Installation**
 
@@ -69,7 +69,7 @@ FRETENATOR_Segment_and_ratio produces a Results Table and the following images:
 • Nearest point emission ratio map:    ◦ A nearest point projection of the emission ratio map, with outlines added between the nuclei NB: the scale of this image is different to the original image and other images, allowing thin outlines to be drawn.
         
 
-## **FRETENATOR_Labeller (Beta with some alpha functionality)**
+## **FRETENATOR_Labeller (Beta)**
 
 ### **Installation**
 Install CLIJ and CLIJ2 by activating their update sites, then copy the appropriate folder into the Fiji/plugins folder and restart Fiji. The folders are **'FRETENATOR_(Rowe et al 2022)'** for the version published in the methods chapter Rowe et al (2022) and **'FRETENATOR_with_tracking'**  for the latest version.
