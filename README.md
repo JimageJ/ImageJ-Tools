@@ -1,5 +1,11 @@
 # ImageJ Tools
 
+### Version info
+
+**This Git gives the published version ('FRETENATOR_(Rowe et al 2022)') and finalised release version ('FRETENATOR_with_tracking') of FRETENATOR1. An updated version (FRETENATOR2) is available as a beta at https://github.com/JimageJ/FRETENATOR2**
+
+
+
 
 ## **Simple autosegmentation (Nuclear segmentation -beta)**
 
@@ -32,7 +38,7 @@ The software will then use the segmentation to quantify statistics (postion, int
 
 ### **Installation**
 
-Install CLIJ and CLIJ2 by activating their update sites, then copy the appropriate folder into the Fiji/plugins folder and restart Fiji. The folders are **'FRETENATOR_(Rowe et al 2022)'** for the version published in the methods chapter Rowe et al (2022) and **'FRETENATOR_with_tracking'**  for the latest version.
+Install CLIJ and CLIJ2 by activating their update sites, then copy the appropriate folder into the Fiji/plugins folder and restart Fiji. The folders are **'FRETENATOR_(Rowe et al 2022)'** for the version published in the methods chapter Rowe et al (2022) and **'FRETENATOR_with_tracking'**  for finalised version of FRETENATOR1.
 
 ### Implementation and usage
 
