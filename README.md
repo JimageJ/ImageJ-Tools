@@ -2,7 +2,7 @@
 
 ### Version info
 
-**This Git gives the version published in Methods in Molecular Biology ('FRETENATOR_(Rowe et al 2022)') and version 1.5 as used in our bioarxiv paper ('FRETENATOR_with_tracking') of FRETENATOR1. An updated version (FRETENATOR2) is available as a beta at https://github.com/JimageJ/FRETENATOR2**
+**This Git gives the version published in Methods in Molecular Biology ('FRETENATOR_(Rowe et al 2022)') and version 1.5 as used in our Nature Plants paper ('FRETENATOR_with_tracking') of FRETENATOR1. An updated version (FRETENATOR2) is available as a beta at https://github.com/JimageJ/FRETENATOR2**
 
 
 
